@@ -12,6 +12,7 @@ if str(project_root) not in sys.path:
 import logging
 
 from src.nvd_client import NVDClient
+from src.cisa_client import CISAClient
 
 # Configure logging
 logging.basicConfig(
@@ -26,10 +27,44 @@ def main():
     """Main function to start the watchtower."""
     logger.info("Watchtower started")
 
-    # Test: Fetch last 7 days of CVEs
-    client = NVDClient()
-    cves = client.fetch_recent_cves(days=7)
-    logger.info(f"Fetched {len(cves)} CVEs published in the last 7 days")
+    days = 7
+
+    # Test: Fetch last 7 days of CVEs from NIST NVD
+    logger.info("Fetching CVEs from NIST NVD...")
+    nvd_client = NVDClient()
+    try:
+        nvd_cves = nvd_client.fetch_recent_cves(days=days)
+        nvd_count = len(nvd_cves)
+        logger.info(f"NVD: Fetched {nvd_count} CVEs published in the last {days} days")
+    except Exception as e:
+        logger.error(f"Error fetching NVD data: {e}", exc_info=True)
+        nvd_cves = []
+        nvd_count = 0
+
+    # Test: Fetch last 7 days of KEV entries from CISA
+    logger.info("Fetching KEV entries from CISA...")
+    cisa_client = CISAClient()
+    try:
+        cisa_kevs = cisa_client.get_recent_kevs(days=days)
+        cisa_count = len(cisa_kevs)
+        logger.info(f"CISA KEV: Fetched {cisa_count} entries added in the last {days} days")
+    except Exception as e:
+        logger.error(f"Error fetching CISA KEV data: {e}", exc_info=True)
+        cisa_kevs = []
+        cisa_count = 0
+
+    # Compare results
+    logger.info("=" * 60)
+    logger.info(f"NVD CVEs: {nvd_count}")
+    logger.info(f"CISA KEV entries: {cisa_count}")
+    
+    if nvd_count > cisa_count:
+        logger.info(f"NVD returned more results ({nvd_count} vs {cisa_count})")
+    elif cisa_count > nvd_count:
+        logger.info(f"CISA KEV returned more results ({cisa_count} vs {nvd_count})")
+    else:
+        logger.info(f"Both sources returned the same number of results ({nvd_count})")
+    logger.info("=" * 60)
 
 
 if __name__ == "__main__":
