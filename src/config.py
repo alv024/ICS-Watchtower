@@ -21,3 +21,6 @@ ICS_KEYWORDS = [
 
 # Check interval in hours
 CHECK_INTERVAL_HOURS = 6
+
+# Default days to look back for vulnerabilities (can be overridden in API)
+DEFAULT_DAYS_LOOKBACK = 30

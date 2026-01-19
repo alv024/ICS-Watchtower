@@ -7,6 +7,8 @@ A Python application for monitoring ICS (Industrial Control Systems) vulnerabili
 - Monitors NIST NVD API for new vulnerabilities
 - Tracks CISA Known Exploited Vulnerabilities (KEV)
 - Filters vulnerabilities by ICS-related keywords
+- Interactive web dashboard with charts and visualizations
+- Auto-refreshing data (every 5 minutes)
 - Configurable check intervals
 
 ## Setup
@@ -22,9 +24,17 @@ cp .env.example .env
 ```
 
 3. Run the application:
+
+**Command-line interface:**
 ```bash
-python -m src.main
+python src/main.py
 ```
+
+**Web dashboard:**
+```bash
+python src/web_app.py
+```
+Then open http://127.0.0.1:5000 in your browser.
 
 ## Configuration
 

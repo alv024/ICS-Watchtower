@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICS Vulnerability Watchtower</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ICS Vulnerability Watchtower</h1>
+            <p class="subtitle">Monitoring Industrial Control Systems Vulnerabilities</p>
+            <div class="status-bar">
+                <div class="days-selector">
+                    <label for="days-input">Days to analyze:</label>
+                    <input type="number" id="days-input" min="1" max="365" value="{{ default_days }}" style="width: 60px; margin: 0 10px; padding: 5px;">
+                    <button id="update-days-btn" style="padding: 5px 15px; cursor: pointer;">Update</button>
+                    <button id="diagnostics-btn" style="padding: 5px 15px; cursor: pointer; margin-left: 10px; background: #ff6b6b; color: white; border: none; border-radius: 4px;">🔍 Diagnostics</button>
+                </div>
+                <span id="last-updated">Loading...</span>
+                <span class="refresh-indicator" id="refresh-indicator">🔄 Auto-refreshing every 5 minutes</span>
+            </div>
+        </header>
+
+        <!-- Statistics Cards -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total ICS Vulnerabilities</div>
+                <div class="stat-value" id="stat-total">-</div>
+                <div class="stat-detail" id="stat-days">Last 30 days</div>
+            </div>
+            <div class="stat-card critical">
+                <div class="stat-label">Critical</div>
+                <div class="stat-value" id="stat-critical">-</div>
+                <div class="stat-detail">CVSS ≥ 9.0 or CISA KEV</div>
+            </div>
+            <div class="stat-card warning">
+                <div class="stat-label">CISA KEV</div>
+                <div class="stat-value" id="stat-kev">-</div>
+                <div class="stat-detail">Known Exploited</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">NVD Total</div>
+                <div class="stat-value" id="stat-nvd">-</div>
+                <div class="stat-detail">All CVEs fetched</div>
+            </div>
+        </section>
+
+        <!-- Charts Section -->
+        <section class="charts-section">
+            <div class="chart-container">
+                <h2>Severity Distribution</h2>
+                <canvas id="severity-chart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h2>Timeline (Last 7 Days)</h2>
+                <canvas id="timeline-chart"></canvas>
+            </div>
+            <div class="chart-container full-width">
+                <h2>Top Vendors/Products Affected</h2>
+                <canvas id="vendor-chart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h2>CISA KEV Status</h2>
+                <canvas id="kev-status-chart"></canvas>
+            </div>
+        </section>
+
+        <!-- Vulnerabilities Table -->
+        <section class="vulnerabilities-section">
+            <h2>ICS-Related Vulnerabilities</h2>
+            <div id="vulnerabilities-container">
+                <div class="loading">Loading vulnerabilities...</div>
+            </div>
+        </section>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
